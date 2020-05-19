@@ -32,7 +32,7 @@ import com.etrade.exampleapp.v1.clients.order.OrderTerm;
 import com.etrade.exampleapp.v1.clients.order.PriceType;
 import com.etrade.exampleapp.v1.exception.ApiException;
 
-public class ETClientApp extends AppCommandLine {
+public class ETClientApp  {
 	
 	protected Logger log = Logger.getLogger(ETClientApp.class);
 	
@@ -48,7 +48,7 @@ public class ETClientApp extends AppCommandLine {
 
 
 	public ETClientApp(String[] args) {
-		super(args);
+	//	super(args);
 		
 	}
 
@@ -100,7 +100,7 @@ public class ETClientApp extends AppCommandLine {
 		ETClientApp obj = new ETClientApp(args);
 
 
-		if (obj.hasOption("help")) {
+		/*if (obj.hasOption("help")) {
 			obj.printHelp();
 			return;
 		}
@@ -111,16 +111,20 @@ public class ETClientApp extends AppCommandLine {
 			System.out.println(" Main menu : NumberFormatException ");
 		} catch (IOException e) {
 			System.out.println(" Main menu : System failure ");;
-		}
+		}*/
+		if (obj==null)
+			System.out.println("null client, error setting up connection...");
+		else
+			System.out.println("client ok.");
 
 	}
 
     public void keyMenu(ETClientApp obj) throws NumberFormatException, IOException {
-
-
+	if (true)
+		return	;
         int choice = 0;
         do {
-            printKeyMenu();
+            //printKeyMenu();
             choice = KeyIn.getKeyInInteger();
             switch (choice) {
 
@@ -157,10 +161,11 @@ public class ETClientApp extends AppCommandLine {
 	public void mainMenu(ETClientApp obj) throws NumberFormatException, IOException {
 
 		int choice = 0;
+		if (true) return;
 		String symbol = "";
 		do {
 
-			printMainMenu();
+		//	printMainMenu();
 
 			choice = KeyIn.getKeyInInteger();
 
@@ -203,10 +208,11 @@ public class ETClientApp extends AppCommandLine {
 
 		int choice = 0;
 		String acctKey = "";
+		if (true) return;
 
 		do {
 
-			printSubMenu();
+		//	printSubMenu();
 
 			choice = KeyIn.getKeyInInteger();
 
@@ -224,7 +230,7 @@ public class ETClientApp extends AppCommandLine {
 				getPortfolio(acctKey);
 				break;
 			case 3:
-				printMenu(orderMenu);
+			//	printMenu(orderMenu);
 
 				int orderChoice = KeyIn.getKeyInInteger();
 
@@ -239,20 +245,20 @@ public class ETClientApp extends AppCommandLine {
 					break;
 				case 3:
 					out.println("Back to previous menu");
-					subMenu(this);
+					//subMenu(this);
 					break;
 				default:
-					printMenu(orderMenu);
+					//printMenu(orderMenu);
 					break;	
 				}
 				break;
 			case 4:
 				//choice = 'x';
 				out.println("Going to main menu");
-				obj.mainMenu(obj);
+				//obj.mainMenu(obj);
 				break;
 			default:
-				printSubMenu();
+				//printSubMenu();
 				break;
 			}
 
@@ -262,6 +268,7 @@ public class ETClientApp extends AppCommandLine {
 	public void previewOrder(){
 
 		OrderPreview client = ctx.getBean(OrderPreview.class);
+		if (true) return;
 		
 		//client.setSessionData(sessionData);
 
@@ -283,9 +290,10 @@ public class ETClientApp extends AppCommandLine {
 		inputs.put("SYMBOL", symbol);
 
 		/* Shows Order Action Menu */
-		printMenu(orderActionMenu);
+		//printMenu(orderActionMenu);
 		/* Accept OrderAction choice*/
-		int choice = isValidMenuItem("Please select valid index for Order Action", orderActionMenu);
+		//int choice = isValidMenuItem("Please select valid index for Order Action", orderActionMenu);
+		int choice = 0;
 		
 		/* Fills data to service*/
 		client.fillOrderActionMenu(choice,inputs);
@@ -295,10 +303,10 @@ public class ETClientApp extends AppCommandLine {
 		inputs.put("QUANTITY", String.valueOf(qty));
 
 		/* Shows Order PriceType  Menu */
-		printMenu(orderPriceTypeMenu);
+		//printMenu(orderPriceTypeMenu);
 
 		/* Accept PriceType choice */
-		choice = isValidMenuItem("Please select valid index for price type", orderPriceTypeMenu);
+		//choice = isValidMenuItem("Please select valid index for price type", orderPriceTypeMenu);
 
 		/* Fills data to service*/
 		client.fillOrderPriceMenu(choice,inputs);
@@ -310,9 +318,9 @@ public class ETClientApp extends AppCommandLine {
 		}
 
 		/* Shows Order Duration  Menu */
-		printMenu(durationTypeMenu);
+		//printMenu(durationTypeMenu);
 
-		choice = isValidMenuItem("Please select valid index for Duration type", durationTypeMenu);
+		//choice = isValidMenuItem("Please select valid index for Duration type", durationTypeMenu);
 
 
 		client.fillDurationMenu(choice,inputs);
