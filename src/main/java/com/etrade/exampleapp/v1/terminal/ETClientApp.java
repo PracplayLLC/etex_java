@@ -2,6 +2,8 @@ package com.etrade.exampleapp.v1.terminal;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.text.DecimalFormat;
@@ -31,6 +33,9 @@ import com.etrade.exampleapp.v1.clients.order.OrderPreview;
 import com.etrade.exampleapp.v1.clients.order.OrderTerm;
 import com.etrade.exampleapp.v1.clients.order.PriceType;
 import com.etrade.exampleapp.v1.exception.ApiException;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.nio.file.FileSystems;
 
 public class ETClientApp  {
 	
@@ -54,7 +59,8 @@ public class ETClientApp  {
 
 	public void init(boolean flag){
 		try {
-			log.debug("Current Thread :"+ Thread.currentThread().getName() + ", Id : "+Thread.currentThread().getId() );
+			Path path = FileSystems.getDefault().getPath(".").toAbsolutePath().normalize();
+			out.println("Current Thread :"+ Thread.currentThread().getName() + ", Id : "+Thread.currentThread().getId()+ " curdir: "+path );
 
 			if( ctx != null)
 				ctx.close();
@@ -62,16 +68,22 @@ public class ETClientApp  {
 			if ( flag ) {
 				ctx = new AnnotationConfigApplicationContext();
 				ctx.register(OOauthConfig.class);
+				out.println("regsiter/refresh: "+flag);
 				ctx.refresh();
+			
 			}else {
 				ctx = new AnnotationConfigApplicationContext();
 				ctx.register(SandBoxConfig.class);
+				out.println("regsiter/refresh: "+flag);
 				ctx.refresh();
 			}
 			
 		} catch (Exception e) {
 			out.println( " Sorry we are not able to initiate oauth request at this time..");
-			log.error("Oauth Initialization failed ",e);
+			StringWriter sw = new StringWriter();
+e.printStackTrace(new PrintWriter(sw));
+String exceptionAsString = sw.toString();
+			out.println("Oauth Initialization failed, err: "+exceptionAsString);
 		}
 		log.debug(" Context initialized for "+(isLive ? "Live Environment":" Sandbox Environment"));
 	}
@@ -81,6 +93,8 @@ public class ETClientApp  {
 		try {
 			if( sessionData == null) {
 				log.debug(" Re-Initalizing oauth ...");
+				ctx.refresh();
+
 				OauthController controller = ctx.getBean(OauthController.class);
 
 				controller.fetchToken();
@@ -266,7 +280,6 @@ public class ETClientApp  {
 	}
 
 	public void previewOrder(){
-
 		OrderPreview client = ctx.getBean(OrderPreview.class);
 		if (true) return;
 		
@@ -333,7 +346,7 @@ public class ETClientApp  {
 	
 
 	public void getAccountList() {
-		
+		out.println("start getbean getaccountlist");	
 		AccountListClient client = ctx.getBean(AccountListClient.class);
 		String response = "";
 		try {
@@ -378,6 +391,7 @@ public class ETClientApp  {
 	}
 
 	public void getBalance(String acctIndex) {
+
 		BalanceClient client = ctx.getBean(BalanceClient.class);
 		String response = "";
 		String accountIdKey = "";
@@ -454,6 +468,7 @@ public class ETClientApp  {
 	}
 
 	public void getPortfolio(String acctIndex) {
+
 		PortfolioClient client = ctx.getBean(PortfolioClient.class);
 		String response = "";
 		String accountIdKey = "";
@@ -583,6 +598,7 @@ public class ETClientApp  {
 
 	public void getQuotes(String symbol) {
 		DecimalFormat format = new DecimalFormat("#.00");
+
 		QuotesClient client = ctx.getBean(QuotesClient.class);
 		String response = "";
 		try {
@@ -708,6 +724,7 @@ public class ETClientApp  {
 	}
 
 	public void getOrders(final String acctIndex) {
+
 		OrderClient client = ctx.getBean(OrderClient.class);
 		
 		String response = "";

@@ -62,7 +62,7 @@ import com.etrade.exampleapp.v1.oauth.AuthorizationService;
 
 @EnableWebSecurity
 @Configuration
-@PropertySource("classpath:oauth.properties")
+@PropertySource(value = "oauth.properties")
 @ComponentScan(basePackages = { "com.etrade.example.*" })
 public class OOauthConfig extends WebSecurityConfigurerAdapter{
 
