@@ -59,20 +59,28 @@ public class ETClientApp  {
 
 	public void init(boolean flag){
 		try {
+	//		addClassPath(".");
 			Path path = FileSystems.getDefault().getPath(".").toAbsolutePath().normalize();
 			out.println("Current Thread :"+ Thread.currentThread().getName() + ", Id : "+Thread.currentThread().getId()+ " curdir: "+path );
 
 			if( ctx != null)
 				ctx.close();
 
+			ctx = new AnnotationConfigApplicationContext();
+			// via: https://stackoverflow.com/questions/8934203/how-can-i-make-spring-load-classes-from-a-given-url-for-bean-instantiation
+			// and: https://stackoverflow.com/questions/34136699/ikvm-getresourceasstreams-returns-null/34379133#34379133
+			//
+
 			if ( flag ) {
-				ctx = new AnnotationConfigApplicationContext();
+				//ctx = new AnnotationConfigApplicationContext();
+	//			ctx.setClassLoader(OOauthConfig.class.getClassLoader());
 				ctx.register(OOauthConfig.class);
 				out.println("regsiter/refresh: "+flag);
 				ctx.refresh();
 			
 			}else {
-				ctx = new AnnotationConfigApplicationContext();
+				//ctx = new AnnotationConfigApplicationContext();
+	//			ctx.setClassLoader(SandBoxConfig.class.getClassLoader());
 				ctx.register(SandBoxConfig.class);
 				out.println("regsiter/refresh: "+flag);
 				ctx.refresh();
@@ -87,6 +95,102 @@ String exceptionAsString = sw.toString();
 		}
 		log.debug(" Context initialized for "+(isLive ? "Live Environment":" Sandbox Environment"));
 	}
+/*
+	public void addClassPath(String cp) {
+    String                              seps=File.pathSeparator;                // separators
+
+    if(!File.pathSeparator.equals(";")) { seps+=";"; }                          // want to accept both system separator and ';'
+    for(StringTokenizer st=new StringTokenizer(cp,seps,false); st.hasMoreTokens(); ) {
+        String pe=st.nextToken();
+        File   fe;
+        String bn=null;
+
+        if(pe.length()==0) { continue; }
+
+        fe=new File(pe);
+        if(fe.getName().indexOf('*')!=-1) {
+            bn=fe.getName();
+            fe=fe.getParentFile();
+            }
+
+        if(!fe.isAbsolute() && pe.charAt(0)!='/' && pe.charAt(0)!='\\') { fe=new File(rootPath,fe.getPath()); }
+        try { fe=fe.getCanonicalFile(); }
+        catch(IOException thr) {
+            log.diagln("Skipping non-existent classpath element '"+fe+"' ("+thr+").");
+            continue;
+            }
+        if(!GenUtil.isBlank(bn)) {
+            fe=new File(fe,bn);
+            }
+        if(classPathElements.contains(fe.getPath())) {
+            log.diagln("Skipping duplicate classpath element '"+fe+"'.");
+            continue;
+            }
+        else {
+            classPathElements.add(fe.getPath());
+            }
+
+        if(!GenUtil.isBlank(bn)) {
+            addJars(fe.getParentFile(),bn);
+            }
+        else if(!fe.exists()) {                                                 // s/never be due getCanonicalFile() above
+            log.diagln("Could not find classpath element '"+fe+"'");
+            }
+        else if(fe.isDirectory()) {
+            addURL(createUrl(fe));
+            }
+        else if(fe.getName().toLowerCase().endsWith(".zip") || fe.getName().toLowerCase().endsWith(".jar")) {
+            addURL(createUrl(fe));
+            }
+        else {
+            log.diagln("ClassPath element '"+fe+"' is not an existing directory and is not a file ending with '.zip' or '.jar'");
+            }
+        }
+    log.diagln("Class loader is using classpath: \""+classPath+"\".");
+    }
+
+    public void addJars(File dir, String nam) {
+    String[]                            jars;                                   // matching jar files
+
+    if(nam.endsWith(".jar")) { nam=nam.substring(0,(nam.length()-4)); }
+
+    if(!dir.exists()) {
+        log.diagln("Could not find directory for Class Path element '"+dir+File.separator+nam+".jar'");
+        return;
+        }
+    if(!dir.canRead()) {
+        log.error("Could not read directory for Class Path element '"+dir+File.separator+nam+".jar'");
+        return;
+        }
+
+    FileSelector fs=new FileSelector(true).add("BaseName","EG",nam,true).add("Name","EW",".jar",true);
+    if((jars=dir.list(fs))==null) {
+        log.error("Error accessing directory for Class Path element '"+dir+File.separator+nam+".jar'");
+        }
+    else if(jars.length==0) {
+        log.diagln("No JAR files match specification '"+new File(dir,nam)+".jar'");
+        }
+    else {
+        log.diagln("Adding files matching specification '"+dir+File.separator+nam+".jar'");
+        Arrays.sort(jars,String.CASE_INSENSITIVE_ORDER);
+        for(int xa=0; xa<jars.length; xa++) { addURL(createUrl(new File(dir,jars[xa]))); }
+        }
+    }
+
+private URL createUrl(File fe) {
+    try {
+        URL url=fe.toURI().toURL();
+        log.diagln("Added URL: '"+url.toString()+"'");
+        if(classPath.length()>0) { classPath+=File.pathSeparator; }
+        this.classPath+=fe.getPath();
+        return url;
+        }
+    catch(MalformedURLException thr) {
+        log.diagln("Classpath element '"+fe+"' could not be used to create a valid file system URL");
+        return null;
+        }
+    }*/
+
 	
 /*	private void initOOauth() {
 		log.debug("Initializing the oauth " );
